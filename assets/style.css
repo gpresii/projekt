@@ -8,5 +8,28 @@ body {
 }
 
 #lewy {
-    width: 30%;
+    width: 20%;
+    float: left;
+    padding: 10px;
+}
+
+#prawy{
+    width: 70%;
+    float: left;
+}
+
+#procesor{
+    background-color: yellow;
+}
+
+#memory{
+    background-color: aqua;
+}
+
+#wejscie, #wyjscie{
+    background-color: aqua;
+    border: 3px black solid;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 30px;
 }
