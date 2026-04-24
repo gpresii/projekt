@@ -2,5 +2,5 @@
 _______________
 
 * Gracjan Błachowicz - taśma wejścia i taśma wyjścia
-* Mateusz Szuber - pamięć i procesor
+* Mateusz Szuber - pamięć, procesor i zapis/odczyt programu
 * Marcel Mazur - program
