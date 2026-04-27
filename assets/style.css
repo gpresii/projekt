@@ -34,6 +34,14 @@ body {
     padding: 30px;
 }
 
+#wejscie {
+    margin-bottom: 30px;
+}
+
+#wyjscie {
+    margin-top: 30px;
+}
+
 .tasma {
     display: inline-block;
 }
@@ -69,4 +77,12 @@ body {
 
 .button_pierwsze, .button_drugie, .button_trzecie {
     padding: 10px;
+}
+
+#program {
+    margin-left: 30px;
+}
+
+#przyciski {
+    margin-left: 30px;
 }
