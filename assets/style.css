@@ -20,10 +20,12 @@ body {
 
 #procesor{
     background-color: yellow;
+    padding: 10px;
 }
 
 #memory{
     background-color: aqua;
+    padding: 10px;
 }
 
 #wejscie, #wyjscie{
