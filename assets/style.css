@@ -53,3 +53,20 @@ body {
     width: 50px;
     text-align: center;
 }
+
+.button_pierwsze {
+    background-color: violet;
+}
+
+.button_drugie {
+    background-color: rgb(6, 190, 6);
+}
+
+.button_trzecie {
+    background-color: rgb(107, 163, 182);
+    margin-left: 30px;
+}
+
+.button_pierwsze, .button_drugie, .button_trzecie {
+    padding: 10px;
+}
