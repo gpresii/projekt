@@ -1,10 +1,12 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body {
     background-color: lightblue;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #lewy {
@@ -13,27 +15,30 @@ body {
     padding: 10px;
 }
 
-#prawy{
-    width: 70%;
+#prawy {
+    width: 75%;
     float: left;
 }
 
-#procesor{
+#procesor {
     background-color: yellow;
-    padding: 10px;
+    padding: 15px;
+    border-radius: 10px;
 }
 
-#memory{
+#memory {
     background-color: aqua;
-    padding: 10px;
+    padding: 15px;
+    border-radius: 10px;
 }
 
-#wejscie, #wyjscie{
+#wejscie,
+#wyjscie {
     background-color: aqua;
-    border: 3px black solid;
+    border: 3px solid black;
     border-radius: 10px;
     margin: 10px;
-    padding: 30px;
+    padding: 20px;
 }
 
 #wejscie {
@@ -48,7 +53,8 @@ body {
     display: inline-block;
 }
 
-.indeksy, .pola {
+.indeksy,
+.pola {
     display: flex;
     gap: 5px;
 }
@@ -66,25 +72,53 @@ body {
 
 .button_pierwsze {
     background-color: violet;
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .button_drugie {
     background-color: rgb(6, 190, 6);
-}
-
-.button_trzecie {
-    background-color: rgb(107, 163, 182);
-    margin-left: 30px;
-}
-
-.button_pierwsze, .button_drugie, .button_trzecie {
     padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button_pierwsze:hover,
+.button_drugie:hover {
+    opacity: 0.8;
 }
 
 #program {
-    margin-left: 30px;
+    margin-left: 10px;
 }
 
 #przyciski {
-    margin-left: 30px;
+    margin-left: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th,
+td {
+    border: 1px solid black;
+    padding: 5px;
+    text-align: center;
+}
+
+input,
+select {
+    padding: 3px;
+}
+
+.acc {
+    background-color: yellow;
+    font-weight: bold;
 }
