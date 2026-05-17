@@ -122,3 +122,8 @@ select {
     background-color: yellow;
     font-weight: bold;
 }
+
+button {
+    cursor: pointer;
+    padding: 3px 6px;
+}
