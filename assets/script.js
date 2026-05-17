@@ -19,8 +19,39 @@ function initMemory() {
     memory = [];
 
     for (let i = 0; i < 10; i++) {
+
         memory[i] = 0;
     }
+}
+
+
+// ===== AKTUALIZACJA LP =====
+
+function aktualizujLP() {
+
+    const rows =
+        document.querySelectorAll(
+            "#programBody tr"
+        );
+
+    rows.forEach((row, index) => {
+
+        row.cells[0].innerText =
+            index + 1;
+    });
+}
+
+
+// ===== USUWANIE WIERSZA =====
+
+function usunWiersz(btn) {
+
+    const row =
+        btn.parentElement.parentElement;
+
+    row.remove();
+
+    aktualizujLP();
 }
 
 
@@ -29,11 +60,14 @@ function initMemory() {
 function dodajWiersz() {
 
     const tbody =
-        document.getElementById("programBody");
+        document.getElementById(
+            "programBody"
+        );
 
     const row = tbody.insertRow();
 
     const lp = tbody.rows.length;
+
 
     // LP
 
@@ -93,21 +127,41 @@ function dodajWiersz() {
     `;
 
 
-    // +
+    // AKCJE
 
     const c5 = row.insertCell();
 
-    const btn = document.createElement("button");
 
-    btn.innerText = "+";
+    // +
 
-    btn.addEventListener(
+    const addBtn =
+        document.createElement("button");
+
+    addBtn.innerText = "+";
+
+    addBtn.addEventListener(
         "click",
         dodajWiersz
     );
 
-    c5.appendChild(btn);
+    c5.appendChild(addBtn);
 
+
+    // -
+
+    const delBtn =
+        document.createElement("button");
+
+    delBtn.innerText = "-";
+
+    delBtn.style.marginLeft = "5px";
+
+    delBtn.addEventListener(
+        "click",
+        () => usunWiersz(delBtn)
+    );
+
+    c5.appendChild(delBtn);
 }
 
 
@@ -163,7 +217,9 @@ function loadProgram() {
         input.push(
 
             parseInt(
-                document.getElementById(`in${i}`).value
+                document.getElementById(
+                    `in${i}`
+                ).value
             ) || 0
 
         );
@@ -180,6 +236,7 @@ function getVal(arg) {
 
     if (!arg) return 0;
 
+
     // =5
 
     if (arg.startsWith("=")) {
@@ -187,8 +244,8 @@ function getVal(arg) {
         return parseInt(
             arg.slice(1)
         );
-
     }
+
 
     // ^2
 
@@ -196,11 +253,14 @@ function getVal(arg) {
 
         const addr =
             memory[
-                parseInt(arg.slice(1))
+                parseInt(
+                    arg.slice(1)
+                )
             ] || 0;
 
         return memory[addr] || 0;
     }
+
 
     // 2
 
@@ -217,7 +277,6 @@ function findLabel(label) {
     return program.findIndex(
         p => p.label === label
     );
-
 }
 
 
@@ -306,9 +365,22 @@ function step() {
 
         case "DIV":
 
+            const divVal =
+                getVal(arg);
+
+            if (divVal === 0) {
+
+                alert(
+                    "Dzielenie przez zero!"
+                );
+
+                running = false;
+
+                return;
+            }
+
             memory[0] = Math.floor(
-                memory[0] /
-                getVal(arg)
+                memory[0] / divVal
             );
 
             break;
@@ -339,11 +411,23 @@ function step() {
 
         case "WRITE":
 
+            if (!arg) {
+
+                alert(
+                    "WRITE wymaga argumentu!"
+                );
+
+                running = false;
+
+                return;
+            }
+
             if (outputIndex < 10) {
 
                 document.getElementById(
                     `out${outputIndex}`
-                ).value = memory[0];
+                ).value =
+                    getVal(arg);
 
                 outputIndex++;
             }
@@ -353,7 +437,22 @@ function step() {
 
         case "JUMP":
 
-            pc = findLabel(arg);
+            const jumpTarget =
+                findLabel(arg);
+
+            if (jumpTarget === -1) {
+
+                alert(
+                    "Nie znaleziono etykiety: "
+                    + arg
+                );
+
+                running = false;
+
+                return;
+            }
+
+            pc = jumpTarget;
 
             render();
 
@@ -364,7 +463,22 @@ function step() {
 
             if (memory[0] > 0) {
 
-                pc = findLabel(arg);
+                const gtzTarget =
+                    findLabel(arg);
+
+                if (gtzTarget === -1) {
+
+                    alert(
+                        "Nie znaleziono etykiety: "
+                        + arg
+                    );
+
+                    running = false;
+
+                    return;
+                }
+
+                pc = gtzTarget;
 
                 render();
 
@@ -378,7 +492,22 @@ function step() {
 
             if (memory[0] === 0) {
 
-                pc = findLabel(arg);
+                const zeroTarget =
+                    findLabel(arg);
+
+                if (zeroTarget === -1) {
+
+                    alert(
+                        "Nie znaleziono etykiety: "
+                        + arg
+                    );
+
+                    running = false;
+
+                    return;
+                }
+
+                pc = zeroTarget;
 
                 render();
 
@@ -442,7 +571,6 @@ function reset() {
         document.getElementById(
             `out${i}`
         ).value = "";
-
     }
 
     render();
@@ -480,16 +608,27 @@ function render() {
         c2.innerText = memory[i];
 
 
-        // AKUMULATOR
-
         if (i === 0) {
 
             row.classList.add("acc");
-
         }
-
     }
 
+
+    // PODŚWIETLENIE AKTUALNEJ LINII
+
+    const rows =
+        document.querySelectorAll(
+            "#programBody tr"
+        );
+
+    rows.forEach((r, i) => {
+
+        r.style.backgroundColor =
+            (i === pc)
+            ? "yellow"
+            : "white";
+    });
 }
 
 
@@ -505,17 +644,32 @@ function saveProgram() {
 
     if (!name) return;
 
-
-    localStorage.setItem(
-
-        `ram_${name}`,
-
-        JSON.stringify(program)
-
+    const data = JSON.stringify(
+        program,
+        null,
+        2
     );
 
-    alert("Program zapisany.");
+    const blob = new Blob(
+        [data],
+        { type: "text/plain" }
+    );
 
+    const a =
+        document.createElement("a");
+
+    a.href =
+        URL.createObjectURL(blob);
+
+    a.download = `${name}.txt`;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(a.href);
 }
 
 
@@ -523,95 +677,80 @@ function saveProgram() {
 
 function loadSavedProgram() {
 
-    const keys =
-        Object.keys(localStorage)
-        .filter(
-            k => k.startsWith("ram_")
-        );
+    const inputFile =
+        document.createElement("input");
 
+    inputFile.type = "file";
 
-    if (keys.length === 0) {
+    inputFile.accept = ".txt,.json";
 
-        alert(
-            "Brak zapisanych programów."
-        );
+    inputFile.onchange = e => {
 
-        return;
-    }
+        const file =
+            e.target.files[0];
 
+        if (!file) return;
 
-    let list =
-        "Zapisane programy:\n\n";
+        const reader =
+            new FileReader();
 
+        reader.onload = event => {
 
-    keys.forEach((k, i) => {
+            try {
 
-        list +=
-            `${i + 1}. `
-            + k.replace("ram_", "")
-            + "\n";
+                const data =
+                    JSON.parse(
+                        event.target.result
+                    );
 
-    });
+                const tbody =
+                    document.getElementById(
+                        "programBody"
+                    );
 
+                tbody.innerHTML = "";
 
-    const nr = prompt(
-        list +
-        "\nPodaj numer programu:"
-    );
+                data.forEach(p => {
 
+                    dodajWiersz();
 
-    const key =
-        keys[parseInt(nr) - 1];
+                    const row =
+                        tbody.rows[
+                            tbody.rows.length - 1
+                        ];
 
+                    row.cells[1]
+                        .querySelector("input")
+                        .value = p.label;
 
-    if (!key) return;
+                    row.cells[2]
+                        .querySelector("select")
+                        .value = p.instr;
 
+                    row.cells[3]
+                        .querySelector("input")
+                        .value = p.arg;
 
-    const data = JSON.parse(
-        localStorage.getItem(key)
-    );
+                    row.cells[4]
+                        .querySelector("input")
+                        .value =
+                            p.comment || "";
+                });
 
+                aktualizujLP();
 
-    const tbody =
-        document.getElementById(
-            "programBody"
-        );
+            } catch {
 
+                alert(
+                    "Błędny plik programu!"
+                );
+            }
+        };
 
-    tbody.innerHTML = "";
+        reader.readAsText(file);
+    };
 
-
-    data.forEach(p => {
-
-        dodajWiersz();
-
-        const row =
-            tbody.rows[
-                tbody.rows.length - 1
-            ];
-
-
-        row.cells[1]
-            .querySelector("input")
-            .value = p.label;
-
-
-        row.cells[2]
-            .querySelector("select")
-            .value = p.instr;
-
-
-        row.cells[3]
-            .querySelector("input")
-            .value = p.arg;
-
-
-        row.cells[4]
-            .querySelector("input")
-            .value = p.comment || "";
-
-    });
-
+    inputFile.click();
 }
 
 
@@ -622,12 +761,13 @@ document.getElementById("runBtn")
         "click",
         () => {
 
+            if (running) return;
+
             loadProgram();
 
             running = true;
 
             run();
-
         }
     );
 
@@ -642,11 +782,9 @@ document.getElementById("stepBtn")
                 loadProgram();
 
                 running = true;
-
             }
 
             step();
-
         }
     );
 
