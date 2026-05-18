@@ -1,129 +1,277 @@
+/* style.css */
+
 * {
+
     margin: 0;
+
     padding: 0;
+
     box-sizing: border-box;
 }
 
 body {
+
     background-color: lightblue;
+
     font-family: Arial, Helvetica, sans-serif;
 }
 
 #lewy {
+
     width: 20%;
+
     float: left;
+
     padding: 10px;
 }
 
 #prawy {
+
     width: 75%;
+
     float: left;
 }
 
 #procesor {
+
     background-color: yellow;
+
     padding: 15px;
+
     border-radius: 10px;
 }
 
+#instr,
+#arg {
+
+    background-color: white;
+
+    padding: 10px;
+
+    margin-top: 5px;
+
+    min-height: 40px;
+
+    border-radius: 5px;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
 #memory {
+
     background-color: aqua;
+
     padding: 15px;
+
     border-radius: 10px;
 }
 
 #wejscie,
 #wyjscie {
+
     background-color: aqua;
+
     border: 3px solid black;
+
     border-radius: 10px;
+
     margin: 10px;
+
     padding: 20px;
 }
 
 #wejscie {
+
     margin-bottom: 30px;
 }
 
 #wyjscie {
+
     margin-top: 30px;
 }
 
 .tasma {
+
     display: inline-block;
 }
 
 .indeksy,
 .pola {
+
     display: flex;
+
     gap: 5px;
 }
 
 .indeksy span {
+
     width: 50px;
+
     text-align: center;
+
     font-weight: bold;
 }
 
 .pola input {
+
     width: 50px;
+
     text-align: center;
 }
 
 .button_pierwsze {
+
     background-color: violet;
+
     padding: 10px;
+
     margin-right: 10px;
+
     border: none;
+
     border-radius: 5px;
+
     cursor: pointer;
 }
 
 .button_drugie {
+
     background-color: rgb(6, 190, 6);
+
     padding: 10px;
+
     margin-right: 10px;
+
     border: none;
+
     border-radius: 5px;
+
     cursor: pointer;
 }
 
 .button_pierwsze:hover,
 .button_drugie:hover {
+
     opacity: 0.8;
 }
 
 #program {
+
     margin-left: 10px;
 }
 
 #przyciski {
+
     margin-left: 10px;
 }
 
 table {
+
     border-collapse: collapse;
+
     background-color: white;
 }
 
 th,
 td {
+
     border: 1px solid black;
+
     padding: 5px;
+
     text-align: center;
 }
 
 input,
 select {
+
     padding: 3px;
 }
 
 .acc {
+
     background-color: yellow;
+
     font-weight: bold;
 }
 
 button {
+
     cursor: pointer;
+
     padding: 3px 6px;
+}
+
+
+/* ===== ANIMACJE ===== */
+
+.active-input {
+
+    background-color: orange !important;
+
+    border: 3px solid red !important;
+}
+
+.active-output {
+
+    background-color: lightgreen !important;
+
+    border: 3px solid green !important;
+}
+
+.active-memory {
+
+    background-color: yellow !important;
+}
+
+.active-instr {
+
+    background-color: gold !important;
+}
+
+.fly-value {
+
+    position: fixed;
+
+    z-index: 9999;
+
+    padding: 10px 14px;
+
+    background-color: red;
+
+    color: white;
+
+    border-radius: 50%;
+
+    font-weight: bold;
+
+    pointer-events: none;
+
+    transition:
+        left 0.6s linear,
+        top 0.6s linear;
+
+    box-shadow: 0 0 10px black;
+}
+
+@keyframes pulse {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+
+    animation: pulse 0.5s;
 }
