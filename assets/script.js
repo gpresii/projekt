@@ -1,12 +1,17 @@
+// script.js
+
 // ===== STAN =====
 
 let memory = [];
+
 let pc = 0;
+
 let running = false;
 
 let program = [];
 
 let input = [];
+
 let inputIndex = 0;
 
 let outputIndex = 0;
@@ -21,6 +26,133 @@ function initMemory() {
     for (let i = 0; i < 10; i++) {
 
         memory[i] = 0;
+    }
+}
+
+
+// ===== SLEEP =====
+
+function sleep(ms) {
+
+    return new Promise(
+
+        resolve => setTimeout(
+            resolve,
+            ms
+        )
+    );
+}
+
+
+// ===== ŚRODEK ELEMENTU =====
+
+function getCenter(el) {
+
+    const rect =
+        el.getBoundingClientRect();
+
+    return {
+
+        x:
+            rect.left +
+            rect.width / 2,
+
+        y:
+            rect.top +
+            rect.height / 2
+    };
+}
+
+
+// ===== MEMORY ROW =====
+
+function getMemoryRow(index) {
+
+    return document.querySelectorAll(
+        "#memoryBody tr"
+    )[index];
+}
+
+
+// ===== ANIMACJA =====
+
+async function animateValue(
+    fromEl,
+    toEl,
+    value
+) {
+
+    const start =
+        getCenter(fromEl);
+
+    const end =
+        getCenter(toEl);
+
+    const fly =
+        document.createElement("div");
+
+    fly.className =
+        "fly-value";
+
+    fly.innerText = value;
+
+    fly.style.left =
+        start.x + "px";
+
+    fly.style.top =
+        start.y + "px";
+
+    document.body.appendChild(fly);
+
+    await sleep(30);
+
+    fly.style.left =
+        end.x + "px";
+
+    fly.style.top =
+        end.y + "px";
+
+    await sleep(650);
+
+    fly.remove();
+}
+
+
+// ===== PODŚWIETLENIA =====
+
+function updateTapeHighlights() {
+
+    for (let i = 0; i < 10; i++) {
+
+        document.getElementById(
+            `in${i}`
+        ).classList.remove(
+            "active-input"
+        );
+
+        document.getElementById(
+            `out${i}`
+        ).classList.remove(
+            "active-output"
+        );
+    }
+
+    if (inputIndex < 10) {
+
+        document.getElementById(
+            `in${inputIndex}`
+        ).classList.add(
+            "active-input"
+        );
+    }
+
+    if (outputIndex < 10) {
+
+        document.getElementById(
+            `out${outputIndex}`
+        ).classList.add(
+            "active-output"
+        );
     }
 }
 
@@ -42,7 +174,7 @@ function aktualizujLP() {
 }
 
 
-// ===== USUWANIE WIERSZA =====
+// ===== USUŃ WIERSZ =====
 
 function usunWiersz(btn) {
 
@@ -55,7 +187,7 @@ function usunWiersz(btn) {
 }
 
 
-// ===== DODAWANIE WIERSZA =====
+// ===== DODAJ WIERSZ =====
 
 function dodajWiersz() {
 
@@ -64,33 +196,39 @@ function dodajWiersz() {
             "programBody"
         );
 
-    const row = tbody.insertRow();
+    const row =
+        tbody.insertRow();
 
-    const lp = tbody.rows.length;
+    const lp =
+        tbody.rows.length;
 
 
     // LP
 
-    const c0 = row.insertCell();
+    const c0 =
+        row.insertCell();
 
     c0.innerText = lp;
 
 
     // ETYKIETA
 
-    const c1 = row.insertCell();
+    const c1 =
+        row.insertCell();
 
-    c1.innerHTML = `
-        <input type="text">
-    `;
+    c1.innerHTML =
+        `<input type="text">`;
 
 
     // INSTRUKCJA
 
-    const c2 = row.insertCell();
+    const c2 =
+        row.insertCell();
 
     c2.innerHTML = `
+
         <select>
+
             <option value="LOAD">LOAD</option>
             <option value="STORE">STORE</option>
             <option value="STORE^">STORE^</option>
@@ -105,37 +243,41 @@ function dodajWiersz() {
             <option value="JGTZ">JGTZ</option>
             <option value="JZERO">JZERO</option>
             <option value="HALT">HALT</option>
+
         </select>
     `;
 
 
     // PARAMETR
 
-    const c3 = row.insertCell();
+    const c3 =
+        row.insertCell();
 
-    c3.innerHTML = `
-        <input type="text">
-    `;
+    c3.innerHTML =
+        `<input type="text">`;
 
 
     // KOMENTARZ
 
-    const c4 = row.insertCell();
+    const c4 =
+        row.insertCell();
 
-    c4.innerHTML = `
-        <input type="text">
-    `;
+    c4.innerHTML =
+        `<input type="text">`;
 
 
     // AKCJE
 
-    const c5 = row.insertCell();
+    const c5 =
+        row.insertCell();
 
 
     // +
 
     const addBtn =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
 
     addBtn.innerText = "+";
 
@@ -150,11 +292,14 @@ function dodajWiersz() {
     // -
 
     const delBtn =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
 
     delBtn.innerText = "-";
 
-    delBtn.style.marginLeft = "5px";
+    delBtn.style.marginLeft =
+        "5px";
 
     delBtn.addEventListener(
         "click",
@@ -202,9 +347,7 @@ function loadProgram() {
                 cells[4]
                 .querySelector("input")
                 .value
-
         });
-
     });
 
 
@@ -221,9 +364,7 @@ function loadProgram() {
                     `in${i}`
                 ).value
             ) || 0
-
         );
-
     }
 
     inputIndex = 0;
@@ -243,7 +384,7 @@ function getVal(arg) {
 
         return parseInt(
             arg.slice(1)
-        );
+        ) || 0;
     }
 
 
@@ -280,9 +421,9 @@ function findLabel(label) {
 }
 
 
-// ===== KROK =====
+// ===== STEP =====
 
-function step() {
+async function step() {
 
     if (!running) return;
 
@@ -300,133 +441,396 @@ function step() {
         program[pc].arg;
 
 
-    document.getElementById("instr")
-        .innerText = instr;
+    // PROCESOR
 
-    document.getElementById("arg")
-        .innerText = arg || "-";
+    const instrBox =
+        document.getElementById(
+            "instr"
+        );
+
+    const argBox =
+        document.getElementById(
+            "arg"
+        );
+
+    instrBox.innerText = instr;
+
+    argBox.innerText =
+        arg || "-";
+
+    instrBox.classList.add(
+        "pulse"
+    );
+
+    argBox.classList.add(
+        "pulse"
+    );
+
+    setTimeout(() => {
+
+        instrBox.classList.remove(
+            "pulse"
+        );
+
+        argBox.classList.remove(
+            "pulse"
+        );
+
+    }, 500);
+
+    await sleep(300);
 
 
     switch (instr) {
 
+
+        // ===== LOAD =====
+
         case "LOAD":
 
-            memory[0] =
-                getVal(arg);
+            {
+
+                const src =
+                    parseInt(arg);
+
+                const srcRow =
+                    getMemoryRow(src);
+
+                const accRow =
+                    getMemoryRow(0);
+
+                await animateValue(
+                    srcRow,
+                    accRow,
+                    getVal(arg)
+                );
+
+                memory[0] =
+                    getVal(arg);
+            }
 
             break;
 
+
+        // ===== STORE =====
 
         case "STORE":
 
-            memory[
-                parseInt(arg)
-            ] = memory[0];
+            {
+
+                const accRow =
+                    getMemoryRow(0);
+
+                const dstRow =
+                    getMemoryRow(
+                        parseInt(arg)
+                    );
+
+                await animateValue(
+                    accRow,
+                    dstRow,
+                    memory[0]
+                );
+
+                memory[
+                    parseInt(arg)
+                ] = memory[0];
+            }
 
             break;
 
+
+        // ===== STORE^ =====
 
         case "STORE^":
 
-            const storeAddr =
-                memory[
-                    parseInt(arg)
-                ] || 0;
+            {
 
-            memory[storeAddr] =
-                memory[0];
+                const addr =
+                    memory[
+                        parseInt(arg)
+                    ] || 0;
+
+                const accRow =
+                    getMemoryRow(0);
+
+                const dstRow =
+                    getMemoryRow(addr);
+
+                await animateValue(
+                    accRow,
+                    dstRow,
+                    memory[0]
+                );
+
+                memory[addr] =
+                    memory[0];
+            }
 
             break;
 
+
+        // ===== ADD =====
 
         case "ADD":
 
-            memory[0] +=
-                getVal(arg);
+            {
+
+                const src =
+                    parseInt(arg);
+
+                const srcRow =
+                    getMemoryRow(src);
+
+                const accRow =
+                    getMemoryRow(0);
+
+                await animateValue(
+                    srcRow,
+                    accRow,
+                    getVal(arg)
+                );
+
+                memory[0] +=
+                    getVal(arg);
+            }
 
             break;
 
+
+        // ===== SUB =====
 
         case "SUB":
 
-            memory[0] -=
-                getVal(arg);
+            {
+
+                const src =
+                    parseInt(arg);
+
+                const srcRow =
+                    getMemoryRow(src);
+
+                const accRow =
+                    getMemoryRow(0);
+
+                await animateValue(
+                    srcRow,
+                    accRow,
+                    getVal(arg)
+                );
+
+                memory[0] -=
+                    getVal(arg);
+            }
 
             break;
 
+
+        // ===== MULT =====
 
         case "MULT":
 
-            memory[0] *=
-                getVal(arg);
+            {
+
+                const src =
+                    parseInt(arg);
+
+                const srcRow =
+                    getMemoryRow(src);
+
+                const accRow =
+                    getMemoryRow(0);
+
+                await animateValue(
+                    srcRow,
+                    accRow,
+                    getVal(arg)
+                );
+
+                memory[0] *=
+                    getVal(arg);
+            }
 
             break;
 
+
+        // ===== DIV =====
 
         case "DIV":
 
-            const divVal =
-                getVal(arg);
+            {
 
-            if (divVal === 0) {
+                const divVal =
+                    getVal(arg);
 
-                alert(
-                    "Dzielenie przez zero!"
+                if (divVal === 0) {
+
+                    alert(
+                        "Dzielenie przez zero!"
+                    );
+
+                    running = false;
+
+                    return;
+                }
+
+                const src =
+                    parseInt(arg);
+
+                const srcRow =
+                    getMemoryRow(src);
+
+                const accRow =
+                    getMemoryRow(0);
+
+                await animateValue(
+                    srcRow,
+                    accRow,
+                    divVal
                 );
 
-                running = false;
-
-                return;
+                memory[0] =
+                    Math.floor(
+                        memory[0] / divVal
+                    );
             }
-
-            memory[0] = Math.floor(
-                memory[0] / divVal
-            );
 
             break;
 
+
+        // ===== READ =====
 
         case "READ":
 
-            memory[
-                parseInt(arg)
-            ] =
-                input[inputIndex++] ?? 0;
+            {
+
+                const inEl =
+                    document.getElementById(
+                        `in${inputIndex}`
+                    );
+
+                const memRow =
+                    getMemoryRow(
+                        parseInt(arg)
+                    );
+
+                const value =
+                    input[inputIndex] ?? 0;
+
+                await animateValue(
+                    inEl,
+                    memRow,
+                    value
+                );
+
+                memory[
+                    parseInt(arg)
+                ] = value;
+
+                inputIndex++;
+            }
 
             break;
 
+
+        // ===== READ^ =====
 
         case "READ^":
 
-            const readAddr =
-                memory[
-                    parseInt(arg)
-                ] || 0;
+            {
 
-            memory[readAddr] =
-                input[inputIndex++] ?? 0;
+                const addr =
+                    memory[
+                        parseInt(arg)
+                    ] || 0;
+
+                const inEl =
+                    document.getElementById(
+                        `in${inputIndex}`
+                    );
+
+                const memRow =
+                    getMemoryRow(addr);
+
+                const value =
+                    input[inputIndex] ?? 0;
+
+                await animateValue(
+                    inEl,
+                    memRow,
+                    value
+                );
+
+                memory[addr] =
+                    value;
+
+                inputIndex++;
+            }
 
             break;
 
 
+        // ===== WRITE =====
+
         case "WRITE":
 
-            if (!arg) {
+            {
 
-                alert(
-                    "WRITE wymaga argumentu!"
+                if (!arg) {
+
+                    alert(
+                        "WRITE wymaga argumentu!"
+                    );
+
+                    running = false;
+
+                    return;
+                }
+
+                const outEl =
+                    document.getElementById(
+                        `out${outputIndex}`
+                    );
+
+                let srcRow;
+
+
+                // =5
+
+                if (arg.startsWith("=")) {
+
+                    srcRow =
+                        getMemoryRow(0);
+
+                } else if (
+                    arg.startsWith("^")
+                ) {
+
+                    const addr =
+                        memory[
+                            parseInt(
+                                arg.slice(1)
+                            )
+                        ] || 0;
+
+                    srcRow =
+                        getMemoryRow(addr);
+
+                } else {
+
+                    srcRow =
+                        getMemoryRow(
+                            parseInt(arg)
+                        );
+                }
+
+                await animateValue(
+                    srcRow,
+                    outEl,
+                    getVal(arg)
                 );
 
-                running = false;
-
-                return;
-            }
-
-            if (outputIndex < 10) {
-
-                document.getElementById(
-                    `out${outputIndex}`
-                ).value =
+                outEl.value =
                     getVal(arg);
 
                 outputIndex++;
@@ -435,38 +839,45 @@ function step() {
             break;
 
 
+        // ===== JUMP =====
+
         case "JUMP":
 
-            const jumpTarget =
-                findLabel(arg);
+            {
 
-            if (jumpTarget === -1) {
+                const target =
+                    findLabel(arg);
 
-                alert(
-                    "Nie znaleziono etykiety: "
-                    + arg
-                );
+                if (target === -1) {
 
-                running = false;
+                    alert(
+                        "Nie znaleziono etykiety: "
+                        + arg
+                    );
+
+                    running = false;
+
+                    return;
+                }
+
+                pc = target;
+
+                render();
 
                 return;
             }
 
-            pc = jumpTarget;
 
-            render();
-
-            return;
-
+        // ===== JGTZ =====
 
         case "JGTZ":
 
             if (memory[0] > 0) {
 
-                const gtzTarget =
+                const target =
                     findLabel(arg);
 
-                if (gtzTarget === -1) {
+                if (target === -1) {
 
                     alert(
                         "Nie znaleziono etykiety: "
@@ -478,7 +889,7 @@ function step() {
                     return;
                 }
 
-                pc = gtzTarget;
+                pc = target;
 
                 render();
 
@@ -487,15 +898,17 @@ function step() {
 
             break;
 
+
+        // ===== JZERO =====
 
         case "JZERO":
 
             if (memory[0] === 0) {
 
-                const zeroTarget =
+                const target =
                     findLabel(arg);
 
-                if (zeroTarget === -1) {
+                if (target === -1) {
 
                     alert(
                         "Nie znaleziono etykiety: "
@@ -507,7 +920,7 @@ function step() {
                     return;
                 }
 
-                pc = zeroTarget;
+                pc = target;
 
                 render();
 
@@ -516,6 +929,8 @@ function step() {
 
             break;
 
+
+        // ===== HALT =====
 
         case "HALT":
 
@@ -536,13 +951,16 @@ function step() {
 
 function run() {
 
-    function loop() {
+    async function loop() {
 
         if (!running) return;
 
-        step();
+        await step();
 
-        setTimeout(loop, 300);
+        setTimeout(
+            loop,
+            300
+        );
     }
 
     loop();
@@ -575,11 +993,13 @@ function reset() {
 
     render();
 
-    document.getElementById("instr")
-        .innerText = "-";
+    document.getElementById(
+        "instr"
+    ).innerText = "-";
 
-    document.getElementById("arg")
-        .innerText = "-";
+    document.getElementById(
+        "arg"
+    ).innerText = "-";
 }
 
 
@@ -597,11 +1017,14 @@ function render() {
 
     for (let i = 0; i < 10; i++) {
 
-        const row = tbody.insertRow();
+        const row =
+            tbody.insertRow();
 
-        const c1 = row.insertCell();
+        const c1 =
+            row.insertCell();
 
-        const c2 = row.insertCell();
+        const c2 =
+            row.insertCell();
 
         c1.innerText = i;
 
@@ -610,12 +1033,14 @@ function render() {
 
         if (i === 0) {
 
-            row.classList.add("acc");
+            row.classList.add(
+                "acc"
+            );
         }
     }
 
 
-    // PODŚWIETLENIE AKTUALNEJ LINII
+    // PODŚWIETLENIE LINII
 
     const rows =
         document.querySelectorAll(
@@ -625,10 +1050,13 @@ function render() {
     rows.forEach((r, i) => {
 
         r.style.backgroundColor =
+
             (i === pc)
             ? "yellow"
             : "white";
     });
+
+    updateTapeHighlights();
 }
 
 
@@ -644,16 +1072,22 @@ function saveProgram() {
 
     if (!name) return;
 
-    const data = JSON.stringify(
-        program,
-        null,
-        2
-    );
+    const data =
+        JSON.stringify(
+            program,
+            null,
+            2
+        );
 
-    const blob = new Blob(
-        [data],
-        { type: "text/plain" }
-    );
+    const blob =
+        new Blob(
+
+            [data],
+
+            {
+                type: "text/plain"
+            }
+        );
 
     const a =
         document.createElement("a");
@@ -661,7 +1095,8 @@ function saveProgram() {
     a.href =
         URL.createObjectURL(blob);
 
-    a.download = `${name}.txt`;
+    a.download =
+        `${name}.txt`;
 
     document.body.appendChild(a);
 
@@ -678,11 +1113,14 @@ function saveProgram() {
 function loadSavedProgram() {
 
     const inputFile =
-        document.createElement("input");
+        document.createElement(
+            "input"
+        );
 
     inputFile.type = "file";
 
-    inputFile.accept = ".txt,.json";
+    inputFile.accept =
+        ".txt,.json";
 
     inputFile.onchange = e => {
 
@@ -756,58 +1194,68 @@ function loadSavedProgram() {
 
 // ===== PRZYCISKI =====
 
-document.getElementById("runBtn")
-    .addEventListener(
-        "click",
-        () => {
+document.getElementById(
+    "runBtn"
+).addEventListener(
 
-            if (running) return;
+    "click",
+
+    () => {
+
+        if (!running) {
 
             loadProgram();
 
             running = true;
-
-            run();
         }
-    );
+
+        run();
+    }
+);
 
 
-document.getElementById("stepBtn")
-    .addEventListener(
-        "click",
-        () => {
+document.getElementById(
+    "stepBtn"
+).addEventListener(
 
-            if (!running) {
+    "click",
 
-                loadProgram();
+    async () => {
 
-                running = true;
-            }
+        if (!running) {
 
-            step();
+            loadProgram();
+
+            running = true;
         }
-    );
+
+        await step();
+    }
+);
 
 
-document.getElementById("resetBtn")
-    .addEventListener(
-        "click",
-        reset
-    );
+document.getElementById(
+    "resetBtn"
+).addEventListener(
+    "click",
+    reset
+);
 
 
-document.getElementById("saveBtn")
-    .addEventListener(
-        "click",
-        saveProgram
-    );
+document.getElementById(
+    "saveBtn"
+).addEventListener(
+    "click",
+    saveProgram
+);
 
 
-document.getElementById("loadBtn")
-    .addEventListener(
-        "click",
-        loadSavedProgram
-    );
+document.getElementById(
+    "loadBtn"
+).addEventListener(
+    "click",
+    loadSavedProgram
+);
 
 
 // ===== START =====
